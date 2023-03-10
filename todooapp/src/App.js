@@ -18,13 +18,34 @@ class App extends React.Component{
 
 	}
 
-	
+	componentDidMount (){
+		fetch('http://10.40.1.230:3001')
+		.then(response => response.json())
+		.then(data => this.createTaskList(data)); 
+	}	
 
+	createTaskList = (data) => {
+	if (data.length <= 0)
+		return;
+	
+	for (let i = 0; i < data.length; i++){
+		this.state.tasklist.push(data[i].item);
+	}
+
+	this.setState({
+		tasklist: this.state.tasklist
+	});
+	}
 
   	addTask = (task) => {
 	console.log(task);
+	let item = {item: task};
+	fetch('http://10.40.1.230:3001', {   //fetch con post
+		method: 'POST',
+		body: JSON.stringify(item)
+	}); 
    	
-	if (task.trim() == ""){
+	if (task.trim() === ""){
 	return;
 	}
 
@@ -46,11 +67,12 @@ class App extends React.Component{
 
 render(){
   return (
-	<Box 
+	<Box id="box" 
 		sx={{
 			display: 'flex',
 			flexWrap: 'wrap',
-			justifyContent: 'center'
+			justifyContent: 'center',
+			alignContent: 'center'	
 			
 		}}
 
